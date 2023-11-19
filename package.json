@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.7",
+    "uglify-js": "^3.17.4"
+  },
+  "scripts": {
+    "watch": "tailwindcss -i ./static/input.css -o ./static/css/main.css -w",
+    "clean": "rm ./static/css/main.css ./static/js/main.min.js",
+    "build": "tailwindcss -i ./static/input.css -o ./static/css/main.css -m && uglifyjs ./static/main.js -o ./static/js/main.min.js",
+    "uglify": "uglifyjs"
+  }
+}

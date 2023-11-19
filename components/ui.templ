@@ -1,0 +1,163 @@
+package components
+
+import "templtodo3/database"
+
+templ Main() {
+	<main class="flex flex-col flex-1 p-4 w-full sm:mx-auto sm:max-w-5xl" id="main-content">
+		{ children... }
+	</main>
+}
+
+templ Header() {
+	<header class="flex flex-col items-center p-4 mb-4 border-b border-white">
+		{ children... }
+	</header>
+}
+
+templ Para(text string) {
+	<p class="py-2">{ text }</p>
+}
+
+templ ClearButton(buttonType string) {
+	<button
+ 		type={ buttonType }
+ 		class="flex gap-1 justify-center items-center py-2 px-4 text-lg font-semibold text-white bg-transparent border border-white hover:bg-white/20"
+	>
+		{ children... }
+	</button>
+}
+
+templ ClearButtonLink(href, hxTarget, hxSwap  string) {
+	<a
+ 		href={ templ.URL(href) }
+ 		hx-get={ string(templ.URL(href)) }
+ 		hx-target={ hxTarget }
+ 		hx-push-url="true"
+ 		hx-swap={ hxSwap + " swap:400ms"}
+ 		class="flex gap-1 justify-center items-center py-2 px-4 text-lg font-semibold text-white bg-transparent border border-white hover:bg-white/20"
+	>
+		{ children... }
+	</a>
+}
+
+templ GreenButton(buttonType string, onClick templ.ComponentScript) {
+	<button
+ 		type={ buttonType }
+ 		onclick={ onClick }
+ 		class="flex gap-1 justify-center items-center py-2 px-4 text-lg font-semibold text-emerald-200 bg-transparent border border-emerald-200 hover:bg-emerald-200/20"
+	>
+		{ children... }
+	</button>
+}
+
+templ BorderlessButton(buttonType string) {
+	<button
+ 		type={ buttonType }
+ 		class="flex gap-1 justify-center items-center py-2 px-4 text-lg font-semibold text-white bg-transparent hover:bg-white/20"
+	>
+		{ children... }
+	</button>
+}
+
+templ TodoCompletedButton(todo database.Todo, csrf string) {
+	if todo.Completed {
+		<button
+ 			class="flex justify-start items-center px-1 text-left text-emerald-400 hover:text-rose-400 focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-black focus:outline-none todo-completed-button"
+ 			id={ "todo-" + todo.ID + "-completed" }
+ 			hx-post={ "/todos/" + todo.ID + "/uncomplete" }
+ 			hx-headers={ HxCsrfHeader(csrf) }
+ 			hx-swap="outerHTML swap:305ms"
+			hx-on::before-request="this.blur()"
+		>
+			<span class="sr-only">Completed</span>
+			@IconCheckCircleFilled("w-6 h-6")
+		</button>
+	} else {
+		<button
+ 			class="flex justify-start items-center px-1 text-left text-gray-400 hover:text-emerald-400 focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-black focus:outline-none todo-completed-button"
+ 			id={ "todo-" + todo.ID + "-uncompleted" }
+ 			hx-post={ "/todos/" + todo.ID + "/complete" }
+ 			hx-headers={ HxCsrfHeader(csrf) }
+ 			hx-swap="outerHTML swap:305ms"
+			hx-on::before-request="this.blur()"
+		>
+			<span class="sr-only">Incomplete</span>
+			@IconCheckCircleOutline("w-6 h-6")
+		</button>
+	}
+}
+
+templ TodoItemForm(todo database.Todo, csrf string) {
+	<form action={ templ.URL("/todos/" + todo.ID + "/edit") }
+		hx-post={ string(templ.URL("/todos/" + todo.ID + "/edit")) }
+		class="flex flex-grow justify-between items-center px-1 m-0 text-left text-white todo-form"
+		method="post"
+		hx-swap="outerHTML swap:405ms"
+		id={ "todo-form-" + todo.ID }
+	>
+		<input type="hidden" name="gorilla.csrf.Token" value={ csrf }/>
+		<input name="text" class="flex-grow py-0.5 px-2 m-0 text-white bg-transparent border-t-0 border-r-0 border-l-0 border-b border-indigo-800 focus:border-t focus:border-r focus:border-l focus:border-white focus:ring-0 focus:outline-none" value={ todo.Text } type="text" id={ "todo-input-" + todo.ID }/>
+		<a class="flex gap-1 justify-center items-center px-2 text-sm text-orange-200 bg-transparent transition-all duration-100 hover:text-orange-400 group"
+			href={ templ.URL("/todos/" + todo.ID) }
+			hx-get={ string(templ.URL("/todos/" + todo.ID)) }
+			hx-target={ "#todo-form-" + todo.ID }
+			hx-swap="outerHTML swap:405ms"
+		>
+			Cancel
+			@IconXMark("w-6 h-6 ")
+		</a>
+		<button class="flex flex-grow-0 gap-1 justify-center items-center py-1 px-2 text-sm text-emerald-200 bg-transparent transition-all duration-100 hover:text-emerald-400 group"
+			type="submit"
+		>
+			Save
+			@IconCloudArrowUp("w-6 h-6")
+		</button>
+	</form>
+}
+
+templ TodoItemText(todo database.Todo) {
+	<div class="flex flex-grow justify-between items-center px-1 text-left text-white todo-text"
+		id={ "todo-text-" + todo.ID }
+	>
+		{ todo.Text }
+		<a class="flex gap-1 justify-center items-center py-1 px-2 text-sm italic bg-transparent transition-all duration-100 group"
+			href={ templ.URL("/todos/" + todo.ID  + "/edit") }
+			hx-get={ string(templ.URL("/todos/" + todo.ID  + "/edit")) }
+			hx-target={ "#todo-text-" + todo.ID }
+			hx-swap="outerHTML swap:405ms"
+		>
+			<span class="text-orange-400 opacity-0 transition-all duration-200 group-hover:opacity-100">
+				Edit
+			</span>
+			@IconPencilSquare("w-6 h-6 text-orange-200 group-hover:text-orange-400 transition-all duration-200")
+		</a>
+	</div>
+}
+
+templ TodoListItem(todo database.Todo, csrf string, edit bool) {
+	<li
+ 		class="flex py-2 px-4 text-lg font-semibold text-white bg-transparent border border-white sm:flex-row todo-item"
+ 		id={ "todo-" + todo.ID }
+	>
+		<div class="flex flex-grow-0 justify-start items-center w-12">
+			@TodoCompletedButton(todo, csrf)
+		</div>
+		if edit {
+			@TodoItemForm(todo, csrf)
+		} else {
+			@TodoItemText(todo)
+		}
+		<div class="flex flex-grow-0 justify-end items-center w-8">
+			<button
+ 				class="flex items-center text-right text-red-200 hover:text-red-400 focus:text-red-400 focus:ring-1 focus:ring-white focus:outline-none"
+ 				hx-delete={ string(templ.URL("/todos/" + todo.ID)) }
+ 				hx-headers={ HxCsrfHeader(csrf) }
+ 				hx-target={ "#todo-" + todo.ID }
+ 				hx-swap="delete swap:300ms"
+				hx-on::before-request="this.blur()"
+			>
+				@IconTrash("w-6 h-6")
+			</button>
+		</div>
+	</li>
+}

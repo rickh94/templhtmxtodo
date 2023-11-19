@@ -1,0 +1,32 @@
+package pages
+
+import "templtodo3/components"
+
+templ StartLoginPage(csrf string, nextLoc string) {
+	@components.Main() {
+		@components.Header() {
+			<h1 class="text-4xl font-bold">Sign In</h1>
+		}
+		<p class="py-4 text-sm sm:mx-auto sm:max-w-2xl">
+			Enter your email to sign in. If you have registered a passkey on this device,
+			you can use that, otherwise you will be emailed a login code.
+		</p>
+		<form
+ 			action=""
+ 			method="post"
+ 			hx-post=""
+ 			hx-swap="outerHTML"
+ 			hx-target="#main-content"
+ 			class="flex flex-col gap-2 mt-40 sm:mx-auto sm:max-w-2xl"
+		>
+			<input type="hidden" name="gorilla.csrf.Token" value={ csrf }/>
+			<input type="hidden" name="next" value={ nextLoc }/>
+			<label for="email" class="text-lg font-semibold">Email</label>
+			<input type="email" name="email" placeholder="name@example.com" required class="w-full text-white bg-transparent border border-white sm:w-80 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-800 focus:outline-none placeholder-white/80 focus:bg-white/10"/>
+			@components.ClearButton("submit") {
+				Sign In
+				@components.IconRightArrowCircle("-mr-1 w-5 h-5")
+			}
+		</form>
+	}
+}

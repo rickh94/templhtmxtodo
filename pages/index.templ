@@ -1,0 +1,106 @@
+package pages
+
+import "templtodo3/components"
+
+templ Index() {
+	@components.Main() {
+		@components.Header() {
+			<h1 class="text-4xl font-bold">Templ Htmx Todo</h1>
+		}
+		<p class="text-left">
+			This is a todo app that feels nice to use, built with most of my favorite technologies.
+			It’s ugly old-school server-rendered on a tiny free-tier server with a bunch of other crap...
+			but I bet it’s more responsive than your big pile of javascript?
+		</p>
+		<div class="flex gap-2 justify-center py-4 px-2 w-full">
+			@components.ClearButtonLink("/auth/login", "#main-content", "outerHTML") {
+				@components.IconUserPlus("-ml-1 w-6 h-6")
+				Sign In
+			}
+			@components.ClearButtonLink("/todos", "#main-content", "outerHTML") {
+				@components.IconTodoList("-ml-1 h-6 w-6")
+				My Todos
+			}
+		</div>
+		<dl class="flex flex-col gap-4 py-4">
+			<div>
+				<dt class="text-2xl font-bold">
+					<a href="https://go.dev" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+						Go
+					</a>
+				</dt>
+				<dd class="mb-2">
+					Google’s un-google-able simple, fast programming language.
+					Once you understand how go thinks, everything seems obvious. The code is hideous, but it works and again, faster than your JS.
+				</dd>
+			</div>
+			<div>
+				<dt class="text-2xl font-bold">
+					<a href="https://github.com/go-chi/chi" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+						Chi
+					</a>
+				</dt>
+				<dd class="mb-2">
+					ServeMux is…fine if that’s all you need, but lacks some of the creature comforts of
+					modern web app routers (verb-based route handling, middleware, path parameters), and chi fills those gaps nicely!
+				</dd>
+			</div>
+			<div>
+				<dt class="text-2xl font-bold">
+					<a href="https://templ.guide" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+						Templ
+					</a>
+				</dt>
+				<dd class="mb-2">
+					Super nice templating library that allows you to build re-usabled components using html (more or less)
+					an go syntax, no third programming language needed!
+				</dd>
+			</div>
+			<div>
+				<dt class="text-2xl font-bold">
+					<a href="https://htmx.org" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+						HTMX
+					</a>
+				</dt>
+				<dd class="mb-2">
+					The star of the show in many ways, HTMX allows me to achieve much of the interactivity you would
+					expect in a SPA, but in a fully server-rendered "Multi-Page App" (I think those are called websites?).
+					The total javascript is less than 100k, even less once it’s gzipped. I used
+					<a href="https://github.com/mavolin/go-htmx" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+					this middleware library</a> to sort out the headers and such.
+				</dd>
+			</div>
+			<div>
+				<dt class="text-2xl font-bold">
+					<a href="https://webauthn.guide" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+					Passkeys
+					</a>
+				</dt>
+				<dd class="mb-2">
+					Passwords are evil and dangerous. Passwordless authentication is the future, and increasingly the present.
+					Using
+					<a href="https://simplewebauthn.dev" class="font-bold underline" target="_blank" rel="noopener noreferrer">Simple WebAuthn</a>
+					{"for"} the browser side and
+					<a href="https://github.com/go-webauthn/webauthn" class="font-bold underline" target="_blank" rel="noopener noreferrer">
+					this go library</a>
+					{"for"} the backend, it was pretty easy to set up and get working (redis, database, etc. as well)
+
+				</dd>
+			</div>
+			<div>
+				<dt class="text-2xl font-bold">
+					Other Tech
+				</dt>
+				<dd class="mb-2">
+					<a href="https://gorm.io" class="font-bold underline" target="_blank" rel="noopener noreferrer">GORM for the database</a>,
+					<a href="https://atlasgo.io" class="font-bold underline" target="_blank" rel="noopener noreferrer">Atlas for migrations</a>,
+					<a href="https://tailwindcss.com" class="font-bold underline" target="_blank" rel="noopener noreferrer">Tailwind for styling</a>,
+					<a href="https://github.com/alexedwards/scs" class="font-bold underline" target="_blank" rel="noopener noreferrer">SCS for session storage</a>,
+					<a href="https://github.com/xhit/go-simple-mail" class="font-bold underline" target="_blank" rel="noopener noreferrer">Go Simple Mail for sending email</a>,
+					<a href="https://github.com/cosmtrek/air" class="font-bold underline" target="_blank" rel="noopener noreferrer">Air for automatic reloading</a>,
+					<a href="https://github.com/benbjohnson/hashfs" class="font-bold underline" target="_blank" rel="noopener noreferrer">Hashfs for static files</a>.
+				</dd>
+			</div>
+		</dl>
+	}
+}

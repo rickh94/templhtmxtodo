@@ -1,0 +1,12 @@
+devenv.lock
+devenv.nix
+prettier.config.mjs
+templtodo.db
+templtodo.db-shm
+templtodo.db-wal
+.envrc
+.devenv
+static/js/main.min.js
+static/css/main.css
+*_templ.go
+Dockerfile

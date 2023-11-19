@@ -1,0 +1,21 @@
+version: '3'
+services:
+  redis:
+    image: redis
+  app:
+    build: .
+    environment:
+      - SECRET_KEY=$SECRET_KEY
+      - REDIS_URI=redis:6379
+      - DB_PATH=/data/db/templtodo.db
+      - EMAIL_HOST=sandbox.smtp.mailtrap.io
+      - EMAIL_USERNAME=$EMAIL_USERNAME
+      - EMAIL_PASSWORD=$EMAIL_PASSWORD
+      - EMAIL_PORT=2525
+      - EMAIL_FROM=Test Server <test@example.com>
+      - HOSTNAME=todo.localhost
+      - DISPLAY_NAME=Test Server
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis

@@ -1,0 +1,24 @@
+package pages
+
+import "templtodo3/components"
+
+templ FinishCodeLoginPage(csrf string, nextLoc string) {
+	@components.Main() {
+		@components.Header() {
+			<h1 class="text-4xl font-bold">Sign In</h1>
+		}
+		<p class="py-4 text-sm sm:mx-auto sm:max-w-2xl">Check your email for a one-time sign-in code and enter it below.</p>
+		<form action="/auth/code" method="post" hx-post="/auth/code" hx-swap="outerHTML" hx-target="#main-content"
+			class="flex flex-col gap-2 mt-40 sm:mx-auto sm:max-w-2xl"
+		>
+			<input type="hidden" name="gorilla.csrf.Token" value={ csrf } />
+			<input type="hidden" name="next" value={ nextLoc } />
+			<label for="code" class="text-lg font-semibold">Sign-in Code</label>
+			<input type="text" name="code" placeholder="123456" required class="w-full text-white bg-transparent border border-white sm:w-80 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-800 focus:outline-none placeholder-white/80 focus:bg-white/10"/>
+			@components.ClearButton("submit") {
+				Complete Sign In
+				@components.IconRightArrowCircle("-mr-1 w-6 h-6")
+			}
+		</form>
+	}
+}

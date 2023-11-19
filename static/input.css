@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.todo-item {
+  transition: all 50ms ease-out;
+  ttransform: translateY(0);
+}
+
+.htmx-added .todo-item {
+  @apply translate-y-full opacity-0;
+  transition: all 200ms ease-out;
+}
+
+.htmx-swapping > .todo-item {
+  transform: translateY(100%);
+  ransition: all 200ms ease-in;
+}
+
+.todo-item.htmx-swapping {
+  @apply opacity-0;
+  transition: all 200ms ease-in;
+}
+
+.todo-completed-button {
+  @apply scale-100 opacity-100;
+}
+
+.htmx-swapping.todo-completed-button {
+  @apply opacity-0;
+  transition: all 150ms ease-in;
+  transform: scale(1.2);
+}
+
+.htmx-added.todo-completed-button {
+  transform: scale(1.2);
+  transition: all 150ms ease-out;
+}
+
+#main-content.htmx-swapping {
+  opacity: 0;
+}
+
+#main-content.htmx-added {
+  opacity: 0;
+}
+
+#main-content {
+  opacity: 1;
+  transition: opacity 200ms ease-in-out;
+}
+
+.todo-text {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+
+.todo-form {
+  opacity: 1;
+  transition: all 200ms ease-out;
+}
+
+/* .todo-text.htmx-swapping, */
+/* .todo-form.htmx-swapping { */
+/*   opacity: 0; */
+/*   transition: opacity 200ms ease-out; */
+/* } */
+
+.htmx-added.todo-form {
+  opacity: 0;
+  transition: all 200ms ease-out;
+}
+
+.htmx-added.todo-text {
+  opacity: 0;
+  transition: all 200ms ease-out;
+}
+
+.htmx-swapping.todo-form {
+  opacity: 0;
+  transition: all 200ms ease-out;
+}
+
+.htmx-swapping.todo-text {
+  opacity: 0;
+  transition: all 200ms ease-out;
+}
+
+body {
+  overscroll-behavior: none;
+}

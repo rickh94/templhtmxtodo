@@ -1,0 +1,80 @@
+package pages
+
+import "templtodo3/database"
+import "templtodo3/components"
+import "github.com/go-webauthn/webauthn/protocol"
+
+script startRegistration(creationOptions *protocol.CredentialCreation, csrf string) {
+  SimpleWebAuthnBrowser.startRegistration(creationOptions.publicKey).then(attResp => {
+    console.log(attResp);
+    fetch('/auth/passkey/register', {
+      method: 'POST',
+      headers: {
+	'Content-Type': 'application/json',
+	'X-CSRF-TOKEN': csrf
+      },
+      body: JSON.stringify(attResp),
+    }).then(res => {
+      console.log(res)
+      if (res.ok) {
+	      showAlert("Use your passkey to login in the future!", "Passkey Registered", "success", 3000);
+      } else {
+	      showAlert("Could not register your new passkey. Try again later", "Registration Failed!", "error", 3000);
+      }
+    }).catch(err => console.log(err));
+  }).catch(err => console.log(err));
+}
+
+templ UserInfoPage(user *database.User, creationOptions *protocol.CredentialCreation, csrf string) {
+	@components.Main() {
+		@components.Header() {
+			<h1 class="text-4xl font-bold">User Info</h1>
+		}
+		<div class="grid grid-cols-1 gap-2 p-4 w-full md:grid-cols-2">
+			<dl class="grid grid-cols-1 gap-4 px-4 pt-4 pb-8 border border-white shadow lg:grid-cols-4 bg-black/50 shadow-white/50">
+				<h2 class="col-span-full pb-2 text-2xl font-semibold text-center">Your Information</h2>
+			        <dt class="text-lg lg:col-span-1 text-white/70">Name</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-3">
+				if user.Name != "" {
+					{ user.Name }
+				} else {
+					No Name
+				}
+				</dd>
+			        <dt class="text-lg lg:col-span-1 text-white/70">Email</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-3">{ user.Email }</dd>
+			        <dt class="text-lg lg:col-span-1 text-white/70">Logout</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-3">
+				@components.ClearButtonLink("/auth/logout", "#main-content", "outerHTML") {
+					Logout
+					@components.IconUserMinus("-mr-1 w-6 h-6")
+				}
+				</dd>
+			</dl>
+			<dl class="grid grid-cols-1 gap-4 px-4 pt-4 pb-8 border border-white shadow lg:grid-cols-4 bg-black/50 shadow-white/50">
+				<h2 class="col-span-full pb-2 text-2xl font-semibold text-center">Your Passkeys</h2>
+			        <dt class="text-lg lg:col-span-2 text-white/70">Passkeys</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2"></dd>
+			        <dt class="text-lg lg:col-span-2 text-white/70">Register Passkey</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2">
+				@components.GreenButton("button", startRegistration(creationOptions, csrf)) {
+					@components.IconFingerPrint("-ml-1 w-6 h-6")
+					Register Passkey
+				}
+				</dd>
+			        <dt class="text-lg lg:col-span-2 text-white/70">Delete Passkey</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2">delete</dd>
+			</dl>
+		</div>
+		<div class="flex gap-2 justify-center items-center py-8 w-full">
+			@components.ClearButtonLink("/todos", "#main-content", "outerHTML") {
+				@components.IconTodoList("-ml-1 h-6 w-6")
+				My Todos
+			}
+			@components.ClearButtonLink("/", "#main-content", "outerHTML") {
+				@components.IconHome("-ml-1 h-6 w-6")
+				Home
+			}
+		</div>
+	}
+}
