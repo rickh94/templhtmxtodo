@@ -50,6 +50,16 @@ templ GreenButton(buttonType string, onClick templ.ComponentScript) {
 	</button>
 }
 
+templ RedButton(buttonType string, onClick templ.ComponentScript) {
+	<button
+ 		type={ buttonType }
+ 		onclick={ onClick }
+ 		class="flex gap-1 justify-center items-center py-2 px-4 text-lg font-semibold text-rose-200 bg-transparent border border-rose-200 hover:bg-rose-200/20"
+	>
+		{ children... }
+	</button>
+}
+
 templ BorderlessButton(buttonType string) {
 	<button
  		type={ buttonType }
@@ -151,6 +161,7 @@ templ TodoListItem(todo database.Todo, csrf string, edit bool) {
 			<button
  				class="flex items-center text-right text-red-200 hover:text-red-400 focus:text-red-400 focus:ring-1 focus:ring-white focus:outline-none"
  				hx-delete={ string(templ.URL("/todos/" + todo.ID)) }
+				hx-confirm={ "Are you sure you want to delete " + todo.Text + "?" }
  				hx-headers={ HxCsrfHeader(csrf) }
  				hx-target={ "#todo-" + todo.ID }
  				hx-swap="delete swap:300ms"

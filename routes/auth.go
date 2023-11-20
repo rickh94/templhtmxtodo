@@ -168,6 +168,12 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+	credentialCount, err := database.CountUserCredentials(user)
+	if err != nil {
+		fmt.Println("Could not count credentials")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 
 	registrationOptions, err := auth.BeginPasskeyRegistration(r.Context(), user)
@@ -176,7 +182,7 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := csrf.Token(r)
-	component := pages.UserInfoPage(user, registrationOptions, token)
+	component := pages.UserInfoPage(user, registrationOptions, token, fmt.Sprintf("%d", credentialCount))
 	HxRender(w, r, component)
 }
 
@@ -200,4 +206,27 @@ func RegisterPasskey(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte("OK"))
 	w.WriteHeader(http.StatusCreated)
+}
+
+func DeletePasskeys(w http.ResponseWriter, r *http.Request) {
+	user, err := auth.GetUser(r.Context())
+	if err != nil {
+		fmt.Println("Could not find user")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	if err = database.DeletePasskeys(user); err != nil {
+		log.Default().Printf("Error deleting passkeys for user %s: %v", user.Email, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Could not delete passkeys"))
+		return
+	}
+	htmx.TriggerAfterSettle(r, "ShowAlert", ShowAlertEvent{
+		Message:  "All your passkeys have been deleted. Consider registering a new one!",
+		Title:    "Passkeys Deleted!",
+		Variant:  "success",
+		Duration: 3000,
+	})
+	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusOK)
 }

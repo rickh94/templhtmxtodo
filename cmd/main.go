@@ -60,8 +60,9 @@ func main() {
 		r.Post("/code", routes.CompleteCodeLogin)
 		r.Get("/code", routes.ForceCodeLogin)
 		r.Get("/logout", routes.LogoutUser)
-		r.Post("/passkey/register", routes.RegisterPasskey)
 		r.Post("/passkey/login", routes.CompletePasskeySignin)
+		r.With(routes.LoginRequired).Post("/passkey/register", routes.RegisterPasskey)
+		r.With(routes.LoginRequired).Post("/passkey/delete", routes.DeletePasskeys)
 		r.With(routes.LoginRequired).Get("/me", routes.UserInfo)
 	})
 

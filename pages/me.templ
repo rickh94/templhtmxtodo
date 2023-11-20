@@ -18,6 +18,7 @@ script startRegistration(creationOptions *protocol.CredentialCreation, csrf stri
       console.log(res)
       if (res.ok) {
 	      showAlert("Use your passkey to login in the future!", "Passkey Registered", "success", 3000);
+	      document.getElementById("passkey-count").innerHTML = (parseInt(document.getElementById("passkey-count").innerHTML) + 1).toString();
       } else {
 	      showAlert("Could not register your new passkey. Try again later", "Registration Failed!", "error", 3000);
       }
@@ -25,12 +26,16 @@ script startRegistration(creationOptions *protocol.CredentialCreation, csrf stri
   }).catch(err => console.log(err));
 }
 
-templ UserInfoPage(user *database.User, creationOptions *protocol.CredentialCreation, csrf string) {
+script deletePasskeys() {
+	document.getElementById("passkey-count").innerHTML = "0";
+}
+
+templ UserInfoPage(user *database.User, creationOptions *protocol.CredentialCreation, csrf string, credentialCount string) {
 	@components.Main() {
 		@components.Header() {
 			<h1 class="text-4xl font-bold">User Info</h1>
 		}
-		<div class="grid grid-cols-1 gap-2 p-4 w-full md:grid-cols-2">
+		<div class="grid grid-cols-1 gap-4 p-4 w-full md:grid-cols-2">
 			<dl class="grid grid-cols-1 gap-4 px-4 pt-4 pb-8 border border-white shadow lg:grid-cols-4 bg-black/50 shadow-white/50">
 				<h2 class="col-span-full pb-2 text-2xl font-semibold text-center">Your Information</h2>
 			        <dt class="text-lg lg:col-span-1 text-white/70">Name</dt>
@@ -54,16 +59,29 @@ templ UserInfoPage(user *database.User, creationOptions *protocol.CredentialCrea
 			<dl class="grid grid-cols-1 gap-4 px-4 pt-4 pb-8 border border-white shadow lg:grid-cols-4 bg-black/50 shadow-white/50">
 				<h2 class="col-span-full pb-2 text-2xl font-semibold text-center">Your Passkeys</h2>
 			        <dt class="text-lg lg:col-span-2 text-white/70">Passkeys</dt>
-			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2"></dd>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2" id="passkey-count">{ credentialCount }</dd>
 			        <dt class="text-lg lg:col-span-2 text-white/70">Register Passkey</dt>
 			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2">
-				@components.GreenButton("button", startRegistration(creationOptions, csrf)) {
-					@components.IconFingerPrint("-ml-1 w-6 h-6")
-					Register Passkey
-				}
+					@components.GreenButton("button", startRegistration(creationOptions, csrf)) {
+						@components.IconFingerPrint("-ml-1 w-6 h-6")
+						Register Passkey
+					}
 				</dd>
-			        <dt class="text-lg lg:col-span-2 text-white/70">Delete Passkey</dt>
-			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2">delete</dd>
+			        <dt class="text-lg lg:col-span-2 text-white/70">Delete All Passkeys</dt>
+			        <dd class="overflow-x-hidden text-lg font-semibold text-white lg:col-span-2">
+					<button
+						type="button"
+						hx-post="/auth/passkey/delete"
+						hx-headers={ components.HxCsrfHeader(csrf) }
+						hx-swap="none"
+						hx-confirm="Are you sure you want to delete all your passkeys?"
+						hx-on::after-request={ deletePasskeys() }
+						class="flex gap-1 justify-center items-center py-2 px-4 text-lg font-semibold text-rose-200 bg-transparent border border-rose-200 hover:bg-rose-200/20"
+					>
+						@components.IconTrash("-ml-1 w-6 h-6")
+						Delete Passkeys
+					</button>
+				</dd>
 			</dl>
 		</div>
 		<div class="flex gap-2 justify-center items-center py-8 w-full">

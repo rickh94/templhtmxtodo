@@ -54,6 +54,23 @@ func (user *User) AddCredential(newCredential *webauthn.Credential) error {
 	return nil
 }
 
+func DeletePasskeys(user *User) error {
+	result := DB.Where("user_id = ?", user.ID).Delete(&Credential{})
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func CountUserCredentials(user *User) (int64, error) {
+	var count int64
+	result := DB.Model(&Credential{}).Where("user_id = ?", user.ID).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return count, nil
+}
+
 func GetUserTodos(user *User) ([]Todo, error) {
 	var todos []Todo
 	result := DB.Where("user_id = ?", user.ID).Order("created_at desc").Find(&todos)
