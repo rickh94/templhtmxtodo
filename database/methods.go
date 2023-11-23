@@ -24,7 +24,7 @@ func (user *User) WebAuthnCredentials() []webauthn.Credential {
 		credentials = append(credentials, webauthn.Credential{
 			ID:              credential.CredentialID,
 			PublicKey:       credential.PublicKey,
-			AttestationType: credential.AttenestationType,
+			AttestationType: credential.AttestationType,
 			Transport:       credential.Transport,
 			Flags:           credential.Flags,
 			Authenticator:   credential.Authenticator,
@@ -42,7 +42,7 @@ func (user *User) AddCredential(newCredential *webauthn.Credential) error {
 	credential.CredentialID = newCredential.ID
 	credential.PublicKey = newCredential.PublicKey
 	credential.Transport = newCredential.Transport
-	credential.AttenestationType = newCredential.AttestationType
+	credential.AttestationType = newCredential.AttestationType
 	credential.Flags = newCredential.Flags
 	credential.Authenticator = newCredential.Authenticator
 	credential.UserID = user.ID

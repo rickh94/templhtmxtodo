@@ -14,8 +14,8 @@ data "external_schema" "gorm" {
 
 env "gorm" {
   src = data.external_schema.gorm.url
-  dev = "sqlite:///tmp/templtodo.db"
-  url = "sqlite:///templtodo.db?fk=1"
+  dev = "sqlite://dev?mode=memory&_fk=1&_journal_mode=WAL"
+  url = "sqlite://${var.dbpath}?_fk=1&_journal_mode=WAL"
   migration {
     dir = "file://migrations"
   }
@@ -28,7 +28,7 @@ env "gorm" {
 
 env "prod" {
   src = data.external_schema.gorm.url
-  url = "sqlite:///${var.dbpath}?fk=1"
+  url = "sqlite:///${var.dbpath}?_fk=1&_journal_mode=WAL"
   migration {
     dir = "file://migrations"
   }

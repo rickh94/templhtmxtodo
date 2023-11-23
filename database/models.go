@@ -33,14 +33,14 @@ type User struct {
 
 type Credential struct {
 	BaseModel
-	CredentialID      []byte                            `json:"credentialId" gorm:"not null;unique;index"`
-	PublicKey         []byte                            `json:"publicKey" gorm:"not null"`
-	Transport         []protocol.AuthenticatorTransport `json:"transports" gorm:"not null;serializer:json" `
-	AttenestationType string                            `json:"attestationType"`
-	Flags             webauthn.CredentialFlags          `json:"flags" gorm:"serializer:json"`
-	Authenticator     webauthn.Authenticator            `json:"authenticator" gorm:"serializer:json"`
-	UserID            string                            `json:"userId"`
-	User              User
+	CredentialID    []byte                            `json:"credentialId" gorm:"not null;unique;index"`
+	PublicKey       []byte                            `json:"publicKey" gorm:"not null"`
+	Transport       []protocol.AuthenticatorTransport `json:"transports" gorm:"not null;serializer:json" `
+	AttestationType string                            `json:"attestationType"`
+	Flags           webauthn.CredentialFlags          `json:"flags" gorm:"serializer:json"`
+	Authenticator   webauthn.Authenticator            `json:"authenticator" gorm:"serializer:json"`
+	UserID          string                            `json:"userId"`
+	User            User
 }
 
 type Todo struct {
